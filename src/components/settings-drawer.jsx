@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 
 const INITIAL_MEMBERS = [
@@ -72,10 +70,18 @@ function Toggle({ value, onChange }) {
   )
 }
 
-export default function SettingsDrawer({ open, onClose }) {
-  const [teamNumber, setTeamNumber] = useState("8417")
-  const [teamName, setTeamName] = useState("RoboRaptors")
-  const [robotName, setRobotName] = useState("Artemis")
+export default function SettingsDrawer({
+  open, onClose,
+  teamNumber, setTeamNumber, teamName, setTeamName, robotName, setRobotName,
+  googleCalendarKey, setGoogleCalendarKey,
+  googlePrivateKey, setGooglePrivateKey,
+  calendarId, setCalendarId,
+  slackClientId, setSlackClientId,
+  slackClientSecret, setSlackClientSecret,
+  slackBotToken, setSlackBotToken,
+  slackChannelId, setSlackChannelId,
+  slackPollChannelId, setSlackPollChannelId,
+}) {
   const [members, setMembers] = useState(INITIAL_MEMBERS)
   const [editingMember, setEditingMember] = useState(null)
   const [newMemberName, setNewMemberName] = useState("")
@@ -84,6 +90,10 @@ export default function SettingsDrawer({ open, onClose }) {
   const [pushNotifications, setPushNotifications] = useState(true)
   const [reminderTiming, setReminderTiming] = useState("15m")
   const [toast, setToast] = useState(null)
+  const [showGoogleKey, setShowGoogleKey] = useState(false)
+  const [showPrivateKey, setShowPrivateKey] = useState(false)
+  const [showSlackSecret, setShowSlackSecret] = useState(false)
+  const [showSlackToken, setShowSlackToken] = useState(false)
 
   const showToast = (msg) => {
     setToast(msg)
@@ -105,7 +115,7 @@ export default function SettingsDrawer({ open, onClose }) {
   }
 
   const handleSave = () => {
-    showToast("Team info updated")
+    showToast("Settings saved")
     onClose()
   }
 
@@ -222,6 +232,123 @@ export default function SettingsDrawer({ open, onClose }) {
                   Add
                 </button>
               </div>
+            </div>
+          </section>
+
+          {/* API Keys */}
+          <section>
+            <p className="text-[#666] text-xs font-medium uppercase tracking-wider mb-3">API Keys</p>
+            <div className="bg-[#232323] rounded-xl p-4 flex flex-col gap-4">
+
+              <p className="text-[#555] text-[10px] font-medium uppercase tracking-wider">Google Calendar</p>
+
+              <div>
+                <label className="text-[#888] text-xs mb-1 block">Client Email <span className="text-[#555] font-normal">(GOOGLE_CLIENT_EMAIL)</span></label>
+                <div className="relative">
+                  <input
+                    type={showGoogleKey ? "text" : "password"}
+                    value={googleCalendarKey || ""}
+                    onChange={(e) => setGoogleCalendarKey(e.target.value)}
+                    placeholder="service-account@project.iam.gserviceaccount.com"
+                    className="w-full bg-[#2a2a2a] text-white placeholder-[#555] rounded-lg px-3 py-2 pr-10 text-sm outline-none focus:ring-1 focus:ring-[#0066CC] font-mono"
+                  />
+                  <button type="button" onClick={() => setShowGoogleKey((v) => !v)}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#666] hover:text-[#aaa] transition-colors">
+                    {showGoogleKey
+                      ? <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                      : <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-[#888] text-xs mb-1 block">Private Key <span className="text-[#555] font-normal">(GOOGLE_PRIVATE_KEY)</span></label>
+                <div className="relative">
+                  <input
+                    type={showPrivateKey ? "text" : "password"}
+                    value={googlePrivateKey || ""}
+                    onChange={(e) => setGooglePrivateKey(e.target.value)}
+                    placeholder="-----BEGIN RSA PRIVATE KEY-----"
+                    className="w-full bg-[#2a2a2a] text-white placeholder-[#555] rounded-lg px-3 py-2 pr-10 text-sm outline-none focus:ring-1 focus:ring-[#0066CC] font-mono"
+                  />
+                  <button type="button" onClick={() => setShowPrivateKey((v) => !v)}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#666] hover:text-[#aaa] transition-colors">
+                    {showPrivateKey
+                      ? <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                      : <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-[#888] text-xs mb-1 block">Calendar ID <span className="text-[#555] font-normal">(GOOGLE_CALENDAR_ID)</span></label>
+                <input type="text" value={calendarId || ""} onChange={(e) => setCalendarId(e.target.value)}
+                  placeholder="your.email@gmail.com"
+                  className="w-full bg-[#2a2a2a] text-white placeholder-[#555] rounded-lg px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[#0066CC] font-mono" />
+              </div>
+
+              <p className="text-[#555] text-[10px] font-medium uppercase tracking-wider pt-1">Slack</p>
+
+              <div>
+                <label className="text-[#888] text-xs mb-1 block">Client ID <span className="text-[#555] font-normal">(SLACK_CLIENT_ID)</span></label>
+                <input type="text" value={slackClientId || ""} onChange={(e) => setSlackClientId(e.target.value)}
+                  placeholder="1234567890.987654321"
+                  className="w-full bg-[#2a2a2a] text-white placeholder-[#555] rounded-lg px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[#0066CC] font-mono" />
+              </div>
+
+              <div>
+                <label className="text-[#888] text-xs mb-1 block">Client Secret <span className="text-[#555] font-normal">(SLACK_CLIENT_SECRET)</span></label>
+                <div className="relative">
+                  <input
+                    type={showSlackSecret ? "text" : "password"}
+                    value={slackClientSecret || ""}
+                    onChange={(e) => setSlackClientSecret(e.target.value)}
+                    placeholder="abc123..."
+                    className="w-full bg-[#2a2a2a] text-white placeholder-[#555] rounded-lg px-3 py-2 pr-10 text-sm outline-none focus:ring-1 focus:ring-[#0066CC] font-mono"
+                  />
+                  <button type="button" onClick={() => setShowSlackSecret((v) => !v)}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#666] hover:text-[#aaa] transition-colors">
+                    {showSlackSecret
+                      ? <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                      : <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-[#888] text-xs mb-1 block">Bot Token <span className="text-[#555] font-normal">(xoxb- for posting)</span></label>
+                <div className="relative">
+                  <input
+                    type={showSlackToken ? "text" : "password"}
+                    value={slackBotToken || ""}
+                    onChange={(e) => setSlackBotToken(e.target.value)}
+                    placeholder="xoxb-..."
+                    className="w-full bg-[#2a2a2a] text-white placeholder-[#555] rounded-lg px-3 py-2 pr-10 text-sm outline-none focus:ring-1 focus:ring-[#0066CC] font-mono"
+                  />
+                  <button type="button" onClick={() => setShowSlackToken((v) => !v)}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#666] hover:text-[#aaa] transition-colors">
+                    {showSlackToken
+                      ? <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                      : <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-[#888] text-xs mb-1 block">Channel IDs <span className="text-[#555] font-normal">(SLACK_CHANNEL_IDS)</span></label>
+                <input type="text" value={slackChannelId || ""} onChange={(e) => setSlackChannelId(e.target.value)}
+                  placeholder="C0123456789,C0987654321"
+                  className="w-full bg-[#2a2a2a] text-white placeholder-[#555] rounded-lg px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[#0066CC] font-mono" />
+              </div>
+
+              <div>
+                <label className="text-[#888] text-xs mb-1 block">Poll Channel IDs <span className="text-[#555] font-normal">(SLACK_POLL_CHANNEL_IDS)</span></label>
+                <input type="text" value={slackPollChannelId || ""} onChange={(e) => setSlackPollChannelId(e.target.value)}
+                  placeholder="C0123456789"
+                  className="w-full bg-[#2a2a2a] text-white placeholder-[#555] rounded-lg px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[#0066CC] font-mono" />
+                <p className="text-[#555] text-xs mt-1">Polls are posted to this channel</p>
+              </div>
+
             </div>
           </section>
 

@@ -58,6 +58,17 @@ const TAB_TITLES = {
 export default function RoboSyncApp() {
   const [activeTab, setActiveTab] = useState("messages")
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [teamNumber, setTeamNumber] = useState("8417")
+  const [teamName, setTeamName] = useState("RoboRaptors")
+  const [robotName, setRobotName] = useState("Artemis")
+  const [googleCalendarKey, setGoogleCalendarKey] = useState(() => localStorage.getItem("googleCalendarKey") || process.env.REACT_APP_GOOGLE_CLIENT_EMAIL || "")
+  const [googlePrivateKey, setGooglePrivateKey] = useState(() => localStorage.getItem("googlePrivateKey") || process.env.REACT_APP_GOOGLE_PRIVATE_KEY || "")
+  const [calendarId, setCalendarId] = useState(() => localStorage.getItem("calendarId") || process.env.REACT_APP_GOOGLE_CALENDAR_ID || "")
+  const [slackClientId, setSlackClientId] = useState(() => localStorage.getItem("slackClientId") || process.env.REACT_APP_SLACK_CLIENT_ID || "")
+  const [slackClientSecret, setSlackClientSecret] = useState(() => localStorage.getItem("slackClientSecret") || process.env.REACT_APP_SLACK_CLIENT_SECRET || "")
+  const [slackBotToken, setSlackBotToken] = useState(() => localStorage.getItem("slackBotToken") || "")
+  const [slackChannelId, setSlackChannelId] = useState(() => localStorage.getItem("slackChannelId") || process.env.REACT_APP_SLACK_CHANNEL_IDS?.split(",")[0] || "")
+  const [slackPollChannelId, setSlackPollChannelId] = useState(() => localStorage.getItem("slackPollChannelId") || process.env.REACT_APP_SLACK_POLL_CHANNEL_IDS?.split(",")[0] || "")
 
   return (
     <div className="flex h-dvh bg-[#1a1a1a] text-white overflow-hidden">
@@ -73,7 +84,7 @@ export default function RoboSyncApp() {
             </div>
             <div>
               <p className="text-white font-bold text-sm leading-tight">RoboSync</p>
-              <p className="text-[#666] text-xs">Team 8417</p>
+              <p className="text-[#666] text-xs">Team {teamNumber}</p>
             </div>
           </div>
         </div>
@@ -103,11 +114,11 @@ export default function RoboSyncApp() {
         <div className="px-3 pb-3 border-t border-[#2a2a2a] pt-3">
           <div className="flex items-center gap-3 px-3 py-2.5">
             <div className="w-8 h-8 rounded-full bg-[#0066CC] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-              RR
+              {teamName.slice(0, 2).toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-white text-xs font-medium truncate">RoboRaptors</p>
-              <p className="text-[#666] text-xs">Artemis</p>
+              <p className="text-white text-xs font-medium truncate">{teamName}</p>
+              <p className="text-[#666] text-xs">{robotName}</p>
             </div>
             <button
               onClick={() => setSettingsOpen(true)}
@@ -160,10 +171,15 @@ export default function RoboSyncApp() {
             <MessagesTab />
           </div>
           <div className={activeTab === "calendar" ? "h-full" : "hidden"}>
-            <CalendarTab />
+            <CalendarTab googleCalendarKey={googleCalendarKey} calendarId={calendarId} />
           </div>
           <div className={activeTab === "polls" ? "h-full" : "hidden"}>
-            <PollsTab />
+            <PollsTab
+              googleCalendarKey={googleCalendarKey}
+              calendarId={calendarId}
+              slackBotToken={slackBotToken}
+              slackChannelId={slackPollChannelId || slackChannelId}
+            />
           </div>
           <div className={activeTab === "knowledge" ? "h-full" : "hidden"}>
             <KnowledgeTab />
@@ -193,7 +209,32 @@ export default function RoboSyncApp() {
       </div>
 
       {/* Settings Drawer */}
-      <SettingsDrawer open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+      <SettingsDrawer
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        teamNumber={teamNumber}
+        setTeamNumber={setTeamNumber}
+        teamName={teamName}
+        setTeamName={setTeamName}
+        robotName={robotName}
+        setRobotName={setRobotName}
+        googleCalendarKey={googleCalendarKey}
+        setGoogleCalendarKey={(v) => { setGoogleCalendarKey(v); localStorage.setItem("googleCalendarKey", v) }}
+        googlePrivateKey={googlePrivateKey}
+        setGooglePrivateKey={(v) => { setGooglePrivateKey(v); localStorage.setItem("googlePrivateKey", v) }}
+        calendarId={calendarId}
+        setCalendarId={(v) => { setCalendarId(v); localStorage.setItem("calendarId", v) }}
+        slackClientId={slackClientId}
+        setSlackClientId={(v) => { setSlackClientId(v); localStorage.setItem("slackClientId", v) }}
+        slackClientSecret={slackClientSecret}
+        setSlackClientSecret={(v) => { setSlackClientSecret(v); localStorage.setItem("slackClientSecret", v) }}
+        slackBotToken={slackBotToken}
+        setSlackBotToken={(v) => { setSlackBotToken(v); localStorage.setItem("slackBotToken", v) }}
+        slackChannelId={slackChannelId}
+        setSlackChannelId={(v) => { setSlackChannelId(v); localStorage.setItem("slackChannelId", v) }}
+        slackPollChannelId={slackPollChannelId}
+        setSlackPollChannelId={(v) => { setSlackPollChannelId(v); localStorage.setItem("slackPollChannelId", v) }}
+      />
     </div>
   )
 }
